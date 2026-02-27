@@ -1,6 +1,6 @@
 {
   "name": "@codize/sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Official TypeScript SDK for the Codize API",
   "homepage": "https://github.com/codize-dev/sdk",
   "repository": {
