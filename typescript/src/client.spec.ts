@@ -23,7 +23,7 @@ const sampleRunResult = {
   stdout: "Hello\n",
   stderr: "",
   output: "Hello\n",
-  exitCode: 0,
+  exit_code: 0,
 };
 
 const sampleRequest = {
@@ -119,22 +119,32 @@ describe("CodizeClient", () => {
             stdout: "",
             stderr: "",
             output: "",
-            exitCode: 0,
+            exit_code: 0,
           },
-          run: { stdout: "ok\n", stderr: "", output: "ok\n", exitCode: 0 },
+          run: { stdout: "ok\n", stderr: "", output: "ok\n", exit_code: 0 },
         };
         const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const result = await client.sandbox.execute(sampleRequest);
 
-        expect(result.data.compile).toEqual(body.compile);
-        expect(result.data.run).toEqual(body.run);
+        expect(result.data.compile).toEqual({
+          stdout: "",
+          stderr: "",
+          output: "",
+          exitCode: 0,
+        });
+        expect(result.data.run).toEqual({
+          stdout: "ok\n",
+          stderr: "",
+          output: "ok\n",
+          exitCode: 0,
+        });
       });
 
       it("returns compile as null when the API returns null", async () => {
         const body = {
           compile: null,
-          run: { stdout: "", stderr: "", output: "", exitCode: 0 },
+          run: { stdout: "", stderr: "", output: "", exit_code: 0 },
         };
         const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
         const client = new CodizeClient({ apiKey: "key", fetchFn });

@@ -98,6 +98,28 @@ export type SandboxStageResult = {
 };
 
 /**
+ * Raw stage result shape returned by the API (snake_case keys).
+ */
+type RawStageResult = {
+  stdout: string;
+  stderr: string;
+  output: string;
+  exit_code: number | null;
+};
+
+/**
+ * Maps a raw API stage result to the SDK's camelCase format.
+ */
+function mapStageResult(raw: RawStageResult): SandboxStageResult {
+  return {
+    stdout: raw.stdout,
+    stderr: raw.stderr,
+    output: raw.output,
+    exitCode: raw.exit_code,
+  };
+}
+
+/**
  * API client for Codize.
  */
 export class CodizeClient {
@@ -158,10 +180,16 @@ export class CodizeClient {
       throw await this._apiError(response);
     }
 
-    const data = (await response.json()) as SandboxExecuteResponse["data"];
+    const data = (await response.json()) as {
+      compile: RawStageResult | null;
+      run: RawStageResult;
+    };
     return {
       headers: response.headers,
-      data: { compile: data.compile, run: data.run },
+      data: {
+        compile: data.compile ? mapStageResult(data.compile) : null,
+        run: mapStageResult(data.run),
+      },
     };
   }
 
