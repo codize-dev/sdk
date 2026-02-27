@@ -1,7 +1,25 @@
 {
   "name": "@codize/sdk",
-  "module": "index.ts",
+  "version": "0.0.0",
+  "description": "Official TypeScript SDK for the Codize API",
+  "homepage": "https://github.com/codize-dev/sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codize-dev/sdk.git",
+    "directory": "typescript"
+  },
+  "license": "MIT",
+  "author": "koki-develop <kou.pg.0131@gmail.com>",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsdown"
   },
