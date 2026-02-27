@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/codize-dev/sdk/compare/typescript-v0.1.0...typescript-v0.1.1) (2026-02-27)
+
+
+### Bug Fixes
+
+* Map API's snake_case exit_code to camelCase exitCode in SandboxStageResult ([d1957fa](https://github.com/codize-dev/sdk/commit/d1957faee5d6aaefebecb2ac56ca02de5e1c7556))
+
 ## [0.1.0](https://github.com/codize-dev/sdk/compare/typescript-v0.0.2...typescript-v0.1.0) (2026-02-27)
 
 
