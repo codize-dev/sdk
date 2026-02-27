@@ -1,6 +1,7 @@
 # @codize/sdk
 
 [![NPM Version](https://img.shields.io/npm/v/@codize/sdk)](https://www.npmjs.com/package/@codize/sdk)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/codize-dev/sdk/ci-typescript.yml)](https://github.com/codize-dev/sdk/actions/workflows/ci-typescript.yml)
 [![GitHub License](https://img.shields.io/github/license/codize-dev/sdk)](../LICENSE)
 
 Official TypeScript SDK for the Codize API.
