@@ -33,15 +33,21 @@ npx tsc --noEmit
 
 tsc is type-check only (`noEmit: true`). tsdown handles the actual compilation and emit.
 
-## Testing / Linting
+## Testing
 
-No test framework or linting tools are configured yet. `CodizeClient` accepts a `fetchFn` option for future test mocking.
+**Vitest** is the test framework. Test files use the `*.spec.ts` naming convention and live alongside source files in `src/`.
+
+```sh
+bun test   # run all tests via vitest
+```
+
+`CodizeClient` accepts a `fetchFn` option for injecting a mock `fetch` in tests.
 
 ## Architecture
 
 Three source files:
 
-- **`src/client.ts`** — `CodizeClient` class. Takes `{ apiKey, fetchFn? }`. Makes `POST https://codize.dev/api/v1/sandbox/execute` with Bearer auth. Returns `SandboxExecuteResponse` containing `data.compile` (nullable) and `data.run` stage results plus `headers`.
+- **`src/client.ts`** — `CodizeClient` class. Takes `{ apiKey, fetchFn? }`. Makes `POST https://codize.dev/api/v1/sandbox/execute` with Bearer auth. Returns `SandboxExecuteResponse` containing `data.compile` (nullable) and `data.run` (nullable) stage results plus `headers`.
 - **`src/error.ts`** — `CodizeApiError` class. Thrown on non-2xx responses. Parses error body using valibot's `apiErrorResponseSchema`. Exposes `.code`, `.status`, `.headers`, `.errors`.
 - **`src/index.ts`** — Barrel file re-exporting all public types and classes from `client.ts` and `error.ts`.
 

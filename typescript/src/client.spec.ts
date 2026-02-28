@@ -153,6 +153,18 @@ describe("CodizeClient", () => {
         expect(result.data.compile).toBeNull();
       });
 
+      it("returns run as null when the API returns null", async () => {
+        const body = {
+          compile: null,
+          run: null,
+        };
+        const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
+        const client = new CodizeClient({ apiKey: "key", fetchFn });
+        const result = await client.sandbox.execute(sampleRequest);
+
+        expect(result.data.run).toBeNull();
+      });
+
       it("returns the response headers", async () => {
         const fetchFn = vi.fn().mockResolvedValue(
           makeJsonResponse(

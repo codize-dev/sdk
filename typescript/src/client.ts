@@ -71,7 +71,7 @@ export type SandboxExecuteResponse = {
     /**
      * Run-stage output.
      */
-    run: SandboxStageResult;
+    run: SandboxStageResult | null;
   };
 };
 
@@ -182,13 +182,13 @@ export class CodizeClient {
 
     const data = (await response.json()) as {
       compile: RawStageResult | null;
-      run: RawStageResult;
+      run: RawStageResult | null;
     };
     return {
       headers: response.headers,
       data: {
         compile: data.compile ? mapStageResult(data.compile) : null,
-        run: mapStageResult(data.run),
+        run: data.run ? mapStageResult(data.run) : null,
       },
     };
   }
