@@ -24,6 +24,8 @@ const sampleRunResult = {
   stderr: "",
   output: "Hello\n",
   exit_code: 0,
+  signal: null,
+  status: "SUCCESS",
 };
 
 const sampleRequest = {
@@ -120,8 +122,10 @@ describe("CodizeClient", () => {
             stderr: "",
             output: "",
             exit_code: 0,
+            signal: null,
+            status: "SUCCESS",
           },
-          run: { stdout: "ok\n", stderr: "", output: "ok\n", exit_code: 0 },
+          run: { stdout: "ok\n", stderr: "", output: "ok\n", exit_code: 0, signal: null, status: "SUCCESS" },
         };
         const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
@@ -132,19 +136,23 @@ describe("CodizeClient", () => {
           stderr: "",
           output: "",
           exitCode: 0,
+          signal: null,
+          status: "SUCCESS",
         });
         expect(result.data.run).toEqual({
           stdout: "ok\n",
           stderr: "",
           output: "ok\n",
           exitCode: 0,
+          signal: null,
+          status: "SUCCESS",
         });
       });
 
       it("returns compile as null when the API returns null", async () => {
         const body = {
           compile: null,
-          run: { stdout: "", stderr: "", output: "", exit_code: 0 },
+          run: { stdout: "", stderr: "", output: "", exit_code: 0, signal: null, status: "SUCCESS" },
         };
         const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
         const client = new CodizeClient({ apiKey: "key", fetchFn });

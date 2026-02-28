@@ -76,6 +76,18 @@ export type SandboxExecuteResponse = {
 };
 
 /**
+ * Execution status of a sandbox stage.
+ */
+export type SandboxStageStatus =
+  | "SUCCESS"
+  | "RUNTIME_ERROR"
+  | "SIGNAL"
+  | "TIMEOUT"
+  | "OUTPUT_LIMIT_EXCEEDED"
+  | "ERROR_LIMIT_EXCEEDED"
+  | (string & {});
+
+/**
  * Output for a single sandbox stage (compile or run).
  */
 export type SandboxStageResult = {
@@ -95,6 +107,14 @@ export type SandboxStageResult = {
    * Process exit code.
    */
   exitCode: number | null;
+  /**
+   * Signal name that terminated the process, or null if not terminated by a signal.
+   */
+  signal: string | null;
+  /**
+   * Execution status.
+   */
+  status: SandboxStageStatus;
 };
 
 /**
@@ -105,6 +125,8 @@ type RawStageResult = {
   stderr: string;
   output: string;
   exit_code: number | null;
+  signal: string | null;
+  status: SandboxStageStatus;
 };
 
 /**
@@ -116,6 +138,8 @@ function mapStageResult(raw: RawStageResult): SandboxStageResult {
     stderr: raw.stderr,
     output: raw.output,
     exitCode: raw.exit_code,
+    signal: raw.signal,
+    status: raw.status,
   };
 }
 

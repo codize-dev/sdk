@@ -7,6 +7,7 @@ export {
   type SandboxExecuteRequest,
   type SandboxExecuteResponse,
   type SandboxStageResult,
+  type SandboxStageStatus,
 } from "./client";
 
 /**
