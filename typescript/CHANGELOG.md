@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/codize-dev/sdk/compare/typescript-v0.1.2...typescript-v0.2.0) (2026-02-28)
+
+
+### Features
+
+* Add signal and status fields to SandboxStageResult ([6d8458e](https://github.com/codize-dev/sdk/commit/6d8458e188f8dca391cc47d467723cc041774de8))
+
 ## [0.1.2](https://github.com/codize-dev/sdk/compare/typescript-v0.1.1...typescript-v0.1.2) (2026-02-28)
 
 
