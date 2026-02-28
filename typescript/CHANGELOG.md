@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.2](https://github.com/codize-dev/sdk/compare/typescript-v0.1.1...typescript-v0.1.2) (2026-02-28)
+
+
+### Features
+
+* Release typescript 0.1.2 ([ff58369](https://github.com/codize-dev/sdk/commit/ff58369e4a54db4bc2a1fe72644df5d4036299a5))
+
+
+### Bug Fixes
+
+* Make SandboxExecuteResponse's run field nullable to match compile ([3d02fe2](https://github.com/codize-dev/sdk/commit/3d02fe2e87c30697488715b2a6eacda77f48b216))
+
 ## [0.1.1](https://github.com/codize-dev/sdk/compare/typescript-v0.1.0...typescript-v0.1.1) (2026-02-27)
 
 
