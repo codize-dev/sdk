@@ -47,8 +47,8 @@ bun test   # run all tests via vitest
 
 Three source files:
 
-- **`src/client.ts`** — `CodizeClient` class. Takes `{ apiKey, fetchFn? }`. Makes `POST https://codize.dev/api/v1/sandbox/execute` with Bearer auth. Returns `SandboxExecuteResponse` containing `data.compile` (nullable) and `data.run` (nullable) stage results plus `headers`.
-- **`src/error.ts`** — `CodizeApiError` class. Thrown on non-2xx responses. Parses error body using valibot's `apiErrorResponseSchema`. Exposes `.code`, `.status`, `.headers`, `.errors`.
+- **`src/client.ts`** — `CodizeClient` class. Takes `{ apiKey, fetchFn? }`. Makes `POST https://codize.dev/api/v1/sandbox/execute` with Bearer auth. Transforms request (camelCase `base64Encoded` → snake_case `base64_encoded`). Returns `SandboxExecuteResponse` containing `data.compile` (nullable) and `data.run` (nullable) stage results plus `headers`.
+- **`src/error.ts`** — `CodizeApiError` class. Thrown on non-2xx responses with a flat `{ code, message, errors? }` JSON body. Parses error body using valibot's `apiErrorResponseSchema`. Exposes `.code`, `.status`, `.headers`, `.errors`.
 - **`src/index.ts`** — Barrel file re-exporting all public types and classes from `client.ts` and `error.ts`.
 
 ## Key Dependencies

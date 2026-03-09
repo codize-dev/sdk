@@ -18,41 +18,42 @@ export type ApiErrorDetails = v.InferOutput<typeof apiErrorDetailsSchema>;
  */
 export type ApiErrorCode =
   | "UNAUTHORIZED"
-  | "INTERNAL_ERROR"
   | "RATE_LIMITED"
   | "NOT_FOUND"
+  | "INTERNAL_ERROR"
+  | "INVALID_REQUEST_BODY"
   | "VALIDATION_ERROR"
+  | "EXECUTION_TIMEOUT"
+  | "REQUEST_BODY_TOO_LARGE"
+  | "QUEUE_FULL"
+  | "QUEUE_TIMEOUT"
   | (string & {});
 
 /**
  * Schema for the top-level API error response payload.
  */
 export const apiErrorResponseSchema = v.object({
-  error: v.object({
-    code: v.string(),
-    message: v.string(),
-    errors: v.optional(v.array(apiErrorDetailsSchema)),
-  }),
+  code: v.string(),
+  message: v.string(),
+  errors: v.optional(v.array(apiErrorDetailsSchema)),
 });
 
 /**
  * API error response.
  */
 export type ApiErrorResponse = {
-  error: {
-    /**
-     * Machine-readable error code.
-     */
-    code: ApiErrorCode;
-    /**
-     * Human-readable error message.
-     */
-    message: string;
-    /**
-     * Optional field-level validation errors.
-     */
-    errors?: ApiErrorDetails[];
-  };
+  /**
+   * Machine-readable error code.
+   */
+  code: ApiErrorCode;
+  /**
+   * Human-readable error message.
+   */
+  message: string;
+  /**
+   * Optional field-level validation errors.
+   */
+  errors?: ApiErrorDetails[];
 };
 
 /**
@@ -62,11 +63,11 @@ export class CodizeApiError extends Error {
   /**
    * Machine-readable API error code.
    */
-  readonly code: ApiErrorResponse["error"]["code"];
+  readonly code: ApiErrorResponse["code"];
   /**
    * Optional field-level validation errors.
    */
-  readonly errors?: ApiErrorResponse["error"]["errors"];
+  readonly errors?: ApiErrorResponse["errors"];
   /**
    * HTTP status code of the response.
    */
@@ -84,11 +85,10 @@ export class CodizeApiError extends Error {
    * @param response Parsed API error payload.
    */
   constructor(status: number, headers: Headers, response: ApiErrorResponse) {
-    super(response.error.message);
+    super(response.message);
     this.name = "CodizeApiError";
-    this.code = response.error.code;
-    this.message = response.error.message;
-    this.errors = response.error.errors;
+    this.code = response.code;
+    this.errors = response.errors;
     this.status = status;
     this.headers = headers;
   }

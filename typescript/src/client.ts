@@ -26,20 +26,23 @@ export type CodizeClientOptions = {
 };
 
 /**
- * Request payload for `sandbox.execute`.
+ * Runtime identifier for sandbox execution.
  */
+export type SandboxRuntime =
+  | "bash"
+  | "go"
+  | "node"
+  | "node-typescript"
+  | "python"
+  | "ruby"
+  | "rust"
+  | (string & {});
+
 export type SandboxExecuteRequest = {
   /**
-   * Language name used for execution.
+   * Runtime used for execution.
    */
-  language:
-    | "go"
-    | "javascript"
-    | "python"
-    | "ruby"
-    | "rust"
-    | "typescript"
-    | (string & {});
+  runtime: SandboxRuntime;
   /**
    * Source files to execute, with their content.
    */
@@ -49,9 +52,13 @@ export type SandboxExecuteRequest = {
      */
     name: string;
     /**
-     * Full text content of the file.
+     * File content. Plain text by default, or Base64-encoded data when `base64Encoded` is `true`.
      */
     content: string;
+    /**
+     * Whether the content is Base64 encoded.
+     */
+    base64Encoded?: boolean;
   }[];
 };
 
@@ -79,12 +86,10 @@ export type SandboxExecuteResponse = {
  * Execution status of a sandbox stage.
  */
 export type SandboxStageStatus =
-  | "SUCCESS"
-  | "RUNTIME_ERROR"
+  | "OK"
   | "SIGNAL"
   | "TIMEOUT"
   | "OUTPUT_LIMIT_EXCEEDED"
-  | "ERROR_LIMIT_EXCEEDED"
   | (string & {});
 
 /**
@@ -106,7 +111,7 @@ export type SandboxStageResult = {
   /**
    * Process exit code.
    */
-  exitCode: number | null;
+  exitCode: number;
   /**
    * Signal name that terminated the process, or null if not terminated by a signal.
    */
@@ -124,7 +129,7 @@ type RawStageResult = {
   stdout: string;
   stderr: string;
   output: string;
-  exit_code: number | null;
+  exit_code: number;
   signal: string | null;
   status: SandboxStageStatus;
 };
@@ -188,6 +193,15 @@ export class CodizeClient {
   private async _sandboxExecute(
     request: SandboxExecuteRequest,
   ): Promise<SandboxExecuteResponse> {
+    const body = {
+      runtime: request.runtime,
+      files: request.files.map((f) => ({
+        name: f.name,
+        content: f.content,
+        base64_encoded: f.base64Encoded ?? false,
+      })),
+    };
+
     const response = await this._fetchFn(
       new URL("/api/v1/sandbox/execute", this._baseUrl),
       {
@@ -196,7 +210,7 @@ export class CodizeClient {
           "Content-Type": "application/json",
           Authorization: `Bearer ${this._apiKey}`,
         },
-        body: JSON.stringify(request),
+        body: JSON.stringify(body),
       },
     );
 

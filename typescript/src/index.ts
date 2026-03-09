@@ -6,6 +6,7 @@ export {
   type CodizeClientOptions,
   type SandboxExecuteRequest,
   type SandboxExecuteResponse,
+  type SandboxRuntime,
   type SandboxStageResult,
   type SandboxStageStatus,
 } from "./client";
