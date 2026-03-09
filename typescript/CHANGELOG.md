@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/codize-dev/sdk/compare/typescript-v0.2.0...typescript-v0.3.0) (2026-03-09)
+
+
+### Features
+
+* Update SDK to match OpenAPI v1.9.0 spec ([8be22aa](https://github.com/codize-dev/sdk/commit/8be22aac82829f994bcede3859bedd277b53d343))
+
 ## [0.2.0](https://github.com/codize-dev/sdk/compare/typescript-v0.1.2...typescript-v0.2.0) (2026-02-28)
 
 
