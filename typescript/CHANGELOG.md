@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/codize-dev/sdk/compare/typescript-v0.3.0...typescript-v0.3.1) (2026-03-10)
+
+
+### Bug Fixes
+
+* /sandbox/execute -&gt; /sandbox/run ([bfb907a](https://github.com/codize-dev/sdk/commit/bfb907a9f56f9e6324617157c23e609751165319))
+
 ## [0.3.0](https://github.com/codize-dev/sdk/compare/typescript-v0.2.0...typescript-v0.3.0) (2026-03-09)
 
 
