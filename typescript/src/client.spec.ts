@@ -50,22 +50,24 @@ describe("CodizeClient", () => {
 
     describe("request", () => {
       it("calls the correct URL", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ compile: null, run: sampleRunResult }),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         await client.sandbox.execute(sampleRequest);
 
         const url = fetchFn.mock.calls[0]![0] as URL;
-        expect(url.href).toBe(
-          "https://codize.dev/api/v1/sandbox/execute",
-        );
+        expect(url.href).toBe("https://codize.dev/api/v1/sandbox/run");
       });
 
       it("sends POST method", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ compile: null, run: sampleRunResult }),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         await client.sandbox.execute(sampleRequest);
 
@@ -74,9 +76,11 @@ describe("CodizeClient", () => {
       });
 
       it("sends Authorization Bearer header with the API key", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ compile: null, run: sampleRunResult }),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
         const client = new CodizeClient({
           apiKey: "test-api-key",
           fetchFn,
@@ -89,9 +93,11 @@ describe("CodizeClient", () => {
       });
 
       it("sends Content-Type: application/json header", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ compile: null, run: sampleRunResult }),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         await client.sandbox.execute(sampleRequest);
 
@@ -101,27 +107,39 @@ describe("CodizeClient", () => {
       });
 
       it("serializes the request body as JSON", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ compile: null, run: sampleRunResult }),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         await client.sandbox.execute(sampleRequest);
 
         const init = fetchFn.mock.calls[0]![1] as RequestInit;
         expect(JSON.parse(init.body as string)).toEqual({
           runtime: "python",
-          files: [{ name: "main.py", content: 'print("Hello")', base64_encoded: false }],
+          files: [
+            {
+              name: "main.py",
+              content: 'print("Hello")',
+              base64_encoded: false,
+            },
+          ],
         });
       });
 
       it("sends base64_encoded flag when specified", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ compile: null, run: sampleRunResult }),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         await client.sandbox.execute({
           runtime: "python",
-          files: [{ name: "data.bin", content: "aGVsbG8=", base64Encoded: true }],
+          files: [
+            { name: "data.bin", content: "aGVsbG8=", base64Encoded: true },
+          ],
         });
 
         const init = fetchFn.mock.calls[0]![1] as RequestInit;
@@ -130,16 +148,18 @@ describe("CodizeClient", () => {
       });
 
       it("handles mixed base64Encoded values across multiple files", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ compile: null, run: sampleRunResult }),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         await client.sandbox.execute({
           runtime: "python",
           files: [
             { name: "main.py", content: 'print("Hello")' },
             { name: "data.bin", content: "aGVsbG8=", base64Encoded: true },
-            { name: "config.json", content: '{}', base64Encoded: false },
+            { name: "config.json", content: "{}", base64Encoded: false },
           ],
         });
 
@@ -148,7 +168,7 @@ describe("CodizeClient", () => {
         expect(body.files).toEqual([
           { name: "main.py", content: 'print("Hello")', base64_encoded: false },
           { name: "data.bin", content: "aGVsbG8=", base64_encoded: true },
-          { name: "config.json", content: '{}', base64_encoded: false },
+          { name: "config.json", content: "{}", base64_encoded: false },
         ]);
       });
     });
@@ -166,7 +186,14 @@ describe("CodizeClient", () => {
             signal: null,
             status: "OK",
           },
-          run: { stdout: "b2sK", stderr: "", output: "b2sK", exit_code: 0, signal: null, status: "OK" },
+          run: {
+            stdout: "b2sK",
+            stderr: "",
+            output: "b2sK",
+            exit_code: 0,
+            signal: null,
+            status: "OK",
+          },
         };
         const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
@@ -193,7 +220,14 @@ describe("CodizeClient", () => {
       it("returns compile as null when the API returns null", async () => {
         const body = {
           compile: null,
-          run: { stdout: "", stderr: "", output: "", exit_code: 0, signal: null, status: "OK" },
+          run: {
+            stdout: "",
+            stderr: "",
+            output: "",
+            exit_code: 0,
+            signal: null,
+            status: "OK",
+          },
         };
         const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
@@ -215,13 +249,13 @@ describe("CodizeClient", () => {
       });
 
       it("returns the response headers", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse(
-            { compile: null, run: sampleRunResult },
-            200,
-            { "x-request-id": "xyz789" },
-          ),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }, 200, {
+              "x-request-id": "xyz789",
+            }),
+          );
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const result = await client.sandbox.execute(sampleRequest);
 
@@ -237,14 +271,14 @@ describe("CodizeClient", () => {
           code: "UNAUTHORIZED",
           message: "Invalid API key",
         };
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse(errorBody, 401),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeJsonResponse(errorBody, 401));
         const client = new CodizeClient({ apiKey: "bad-key", fetchFn });
 
-        await expect(
-          client.sandbox.execute(sampleRequest),
-        ).rejects.toThrow(CodizeApiError);
+        await expect(client.sandbox.execute(sampleRequest)).rejects.toThrow(
+          CodizeApiError,
+        );
       });
 
       it("sets the correct status on CodizeApiError", async () => {
@@ -252,9 +286,9 @@ describe("CodizeClient", () => {
           code: "RATE_LIMITED",
           message: "Too many requests",
         };
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse(errorBody, 429),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeJsonResponse(errorBody, 429));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const error = await client.sandbox
           .execute(sampleRequest)
@@ -269,9 +303,9 @@ describe("CodizeClient", () => {
           code: "RATE_LIMITED",
           message: "Too many requests",
         };
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse(errorBody, 429),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeJsonResponse(errorBody, 429));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const error = await client.sandbox
           .execute(sampleRequest)
@@ -285,9 +319,9 @@ describe("CodizeClient", () => {
           code: "UNAUTHORIZED",
           message: "Invalid API key",
         };
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse(errorBody, 401),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeJsonResponse(errorBody, 401));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const error = await client.sandbox
           .execute(sampleRequest)
@@ -300,21 +334,17 @@ describe("CodizeClient", () => {
         const errorBody = {
           code: "VALIDATION_ERROR",
           message: "Validation failed",
-          errors: [
-            { message: "'files' is required", path: ["files"] },
-          ],
+          errors: [{ message: "'files' is required", path: ["files"] }],
         };
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse(errorBody, 422),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeJsonResponse(errorBody, 422));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const error = await client.sandbox
           .execute(sampleRequest)
           .catch((e: unknown) => e);
 
-        expect((error as CodizeApiError).errors).toEqual(
-          errorBody.errors,
-        );
+        expect((error as CodizeApiError).errors).toEqual(errorBody.errors);
       });
 
       it("attaches response headers to CodizeApiError", async () => {
@@ -332,9 +362,9 @@ describe("CodizeClient", () => {
           .execute(sampleRequest)
           .catch((e: unknown) => e);
 
-        expect(
-          (error as CodizeApiError).headers.get("x-request-id"),
-        ).toBe("err-123");
+        expect((error as CodizeApiError).headers.get("x-request-id")).toBe(
+          "err-123",
+        );
       });
     });
 
@@ -342,9 +372,9 @@ describe("CodizeClient", () => {
 
     describe("unstructured error fallback", () => {
       it("throws a plain Error when the body is not valid JSON", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeTextResponse("Gateway Timeout", 504),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeTextResponse("Gateway Timeout", 504));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const error = await client.sandbox
           .execute(sampleRequest)
@@ -355,9 +385,9 @@ describe("CodizeClient", () => {
       });
 
       it("includes status and body in the fallback error message for non-JSON", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeTextResponse("Bad Gateway", 502),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeTextResponse("Bad Gateway", 502));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const error = await client.sandbox
           .execute(sampleRequest)
@@ -368,9 +398,9 @@ describe("CodizeClient", () => {
       });
 
       it("throws a plain Error when JSON does not match the API error schema", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ unexpected: true }, 500),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeJsonResponse({ unexpected: true }, 500));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const error = await client.sandbox
           .execute(sampleRequest)
@@ -381,9 +411,9 @@ describe("CodizeClient", () => {
       });
 
       it("includes status in the fallback error message for schema mismatch", async () => {
-        const fetchFn = vi.fn().mockResolvedValue(
-          makeJsonResponse({ unexpected: true }, 500),
-        );
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(makeJsonResponse({ unexpected: true }, 500));
         const client = new CodizeClient({ apiKey: "key", fetchFn });
         const error = await client.sandbox
           .execute(sampleRequest)

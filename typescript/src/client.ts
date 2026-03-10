@@ -203,7 +203,7 @@ export class CodizeClient {
     };
 
     const response = await this._fetchFn(
-      new URL("/api/v1/sandbox/execute", this._baseUrl),
+      new URL("/api/v1/sandbox/run", this._baseUrl),
       {
         method: "POST",
         headers: {
