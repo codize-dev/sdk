@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/codize-dev/sdk/compare/typescript-v0.3.1...typescript-v0.4.0) (2026-04-22)
+
+
+### Features
+
+* Add stdin request field and durationMs to SandboxStageResult ([7493dac](https://github.com/codize-dev/sdk/commit/7493dacc0b8c7a6a49b06adf0a114ff78daaa8f1))
+
 ## [0.3.1](https://github.com/codize-dev/sdk/compare/typescript-v0.3.0...typescript-v0.3.1) (2026-03-10)
 
 
