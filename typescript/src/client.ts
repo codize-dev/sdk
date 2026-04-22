@@ -38,6 +38,20 @@ export type SandboxRuntime =
   | "rust"
   | (string & {});
 
+/**
+ * Stdin payload delivered to the run-stage child process.
+ */
+export type SandboxStdinInput = {
+  /**
+   * Stdin content. Plain text by default, or Base64-encoded data when `base64Encoded` is `true`.
+   */
+  content: string;
+  /**
+   * Whether the content is Base64 encoded.
+   */
+  base64Encoded?: boolean;
+};
+
 export type SandboxExecuteRequest = {
   /**
    * Runtime used for execution.
@@ -60,6 +74,10 @@ export type SandboxExecuteRequest = {
      */
     base64Encoded?: boolean;
   }[];
+  /**
+   * Optional stdin payload delivered to the run-stage child process.
+   */
+  stdin?: SandboxStdinInput;
 };
 
 /**
@@ -120,6 +138,10 @@ export type SandboxStageResult = {
    * Execution status.
    */
   status: SandboxStageStatus;
+  /**
+   * Wall-clock execution time for this stage in milliseconds.
+   */
+  durationMs: number;
 };
 
 /**
@@ -132,6 +154,7 @@ type RawStageResult = {
   exit_code: number;
   signal: string | null;
   status: SandboxStageStatus;
+  duration_ms: number;
 };
 
 /**
@@ -145,6 +168,7 @@ function mapStageResult(raw: RawStageResult): SandboxStageResult {
     exitCode: raw.exit_code,
     signal: raw.signal,
     status: raw.status,
+    durationMs: raw.duration_ms,
   };
 }
 
@@ -193,7 +217,11 @@ export class CodizeClient {
   private async _sandboxExecute(
     request: SandboxExecuteRequest,
   ): Promise<SandboxExecuteResponse> {
-    const body = {
+    const body: {
+      runtime: SandboxRuntime;
+      files: { name: string; content: string; base64_encoded: boolean }[];
+      stdin?: { content: string; base64_encoded: boolean };
+    } = {
       runtime: request.runtime,
       files: request.files.map((f) => ({
         name: f.name,
@@ -201,6 +229,12 @@ export class CodizeClient {
         base64_encoded: f.base64Encoded ?? false,
       })),
     };
+    if (request.stdin !== undefined) {
+      body.stdin = {
+        content: request.stdin.content,
+        base64_encoded: request.stdin.base64Encoded ?? false,
+      };
+    }
 
     const response = await this._fetchFn(
       new URL("/api/v1/sandbox/run", this._baseUrl),

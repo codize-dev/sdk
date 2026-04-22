@@ -26,6 +26,7 @@ const sampleRunResult = {
   exit_code: 0,
   signal: null,
   status: "OK",
+  duration_ms: 42,
 };
 
 const sampleRequest = {
@@ -128,6 +129,80 @@ describe("CodizeClient", () => {
         });
       });
 
+      it("omits the stdin field when stdin is not specified", async () => {
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
+        const client = new CodizeClient({ apiKey: "key", fetchFn });
+        await client.sandbox.execute(sampleRequest);
+
+        const init = fetchFn.mock.calls[0]![1] as RequestInit;
+        const body = JSON.parse(init.body as string);
+        expect(body).not.toHaveProperty("stdin");
+      });
+
+      it("sends stdin with plain content and base64_encoded: false by default", async () => {
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
+        const client = new CodizeClient({ apiKey: "key", fetchFn });
+        await client.sandbox.execute({
+          ...sampleRequest,
+          stdin: { content: "hello\n" },
+        });
+
+        const init = fetchFn.mock.calls[0]![1] as RequestInit;
+        const body = JSON.parse(init.body as string);
+        expect(body.stdin).toEqual({
+          content: "hello\n",
+          base64_encoded: false,
+        });
+      });
+
+      it("sends stdin with base64_encoded: true when specified", async () => {
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
+        const client = new CodizeClient({ apiKey: "key", fetchFn });
+        await client.sandbox.execute({
+          ...sampleRequest,
+          stdin: { content: "aGVsbG8K", base64Encoded: true },
+        });
+
+        const init = fetchFn.mock.calls[0]![1] as RequestInit;
+        const body = JSON.parse(init.body as string);
+        expect(body.stdin).toEqual({
+          content: "aGVsbG8K",
+          base64_encoded: true,
+        });
+      });
+
+      it("sends stdin with an empty string content", async () => {
+        const fetchFn = vi
+          .fn()
+          .mockResolvedValue(
+            makeJsonResponse({ compile: null, run: sampleRunResult }),
+          );
+        const client = new CodizeClient({ apiKey: "key", fetchFn });
+        await client.sandbox.execute({
+          ...sampleRequest,
+          stdin: { content: "" },
+        });
+
+        const init = fetchFn.mock.calls[0]![1] as RequestInit;
+        const body = JSON.parse(init.body as string);
+        expect(body.stdin).toEqual({
+          content: "",
+          base64_encoded: false,
+        });
+      });
+
       it("sends base64_encoded flag when specified", async () => {
         const fetchFn = vi
           .fn()
@@ -185,6 +260,7 @@ describe("CodizeClient", () => {
             exit_code: 0,
             signal: null,
             status: "OK",
+            duration_ms: 17,
           },
           run: {
             stdout: "b2sK",
@@ -193,6 +269,7 @@ describe("CodizeClient", () => {
             exit_code: 0,
             signal: null,
             status: "OK",
+            duration_ms: 123,
           },
         };
         const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
@@ -206,6 +283,7 @@ describe("CodizeClient", () => {
           exitCode: 0,
           signal: null,
           status: "OK",
+          durationMs: 17,
         });
         expect(result.data.run).toEqual({
           stdout: "b2sK",
@@ -214,7 +292,28 @@ describe("CodizeClient", () => {
           exitCode: 0,
           signal: null,
           status: "OK",
+          durationMs: 123,
         });
+      });
+
+      it("maps duration_ms to durationMs", async () => {
+        const body = {
+          compile: null,
+          run: {
+            stdout: "",
+            stderr: "",
+            output: "",
+            exit_code: 0,
+            signal: null,
+            status: "OK",
+            duration_ms: 250,
+          },
+        };
+        const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));
+        const client = new CodizeClient({ apiKey: "key", fetchFn });
+        const result = await client.sandbox.execute(sampleRequest);
+
+        expect(result.data.run?.durationMs).toBe(250);
       });
 
       it("returns compile as null when the API returns null", async () => {
@@ -227,6 +326,7 @@ describe("CodizeClient", () => {
             exit_code: 0,
             signal: null,
             status: "OK",
+            duration_ms: 0,
           },
         };
         const fetchFn = vi.fn().mockResolvedValue(makeJsonResponse(body));

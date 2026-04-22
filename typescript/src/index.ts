@@ -9,6 +9,7 @@ export {
   type SandboxRuntime,
   type SandboxStageResult,
   type SandboxStageStatus,
+  type SandboxStdinInput,
 } from "./client";
 
 /**
