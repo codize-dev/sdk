@@ -17,13 +17,13 @@ $ npm install @codize/sdk
 ```typescript
 import { CodizeClient } from "@codize/sdk";
 
-// Get your API key from the Codize: https://codize.dev/settings/api-keys
+// Get your API key from Codize: https://codize.dev/settings/api-keys
 const apiKey = "cdz_****";
 
 const client = new CodizeClient({ apiKey });
 
 const result = await client.sandbox.execute({
-  language: "typescript",
+  runtime: "node-typescript",
   files: [
     {
       name: "index.ts",
@@ -32,19 +32,26 @@ const result = await client.sandbox.execute({
   ],
 });
 
+// `stdout`, `stderr`, and `output` are Base64-encoded.
 console.log(result.data);
 // => {
 //      compile: {
 //        stdout: "",
 //        stderr: "",
 //        output: "",
-//        exit_code: 0,
+//        exitCode: 0,
+//        status: "OK",
+//        signal: null,
+//        durationMs: 123,
 //      },
 //      run: {
-//        stdout: "Hello, World!\n",
+//        stdout: "SGVsbG8sIFdvcmxkIQo=",
 //        stderr: "",
-//        output: "Hello, World!\n",
-//        exit_code: 0,
+//        output: "SGVsbG8sIFdvcmxkIQo=",
+//        exitCode: 0,
+//        status: "OK",
+//        signal: null,
+//        durationMs: 42,
 //      },
 //    }
 ```
